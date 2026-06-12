@@ -66,11 +66,14 @@ def walk_products(root):
             [name for name in filenames if Path(name).suffix.lower() in IMAGE_EXTENSIONS],
             key=lambda name: (neutral_image_score(name), name.lower()),
         )
-        if not image_files:
+        has_child_dirs = any(entry.is_dir() for entry in Path(dirpath).iterdir())
+        if not image_files and has_child_dirs:
             continue
 
         relative_dir = Path(dirpath).relative_to(root)
         parts = relative_dir.parts
+        if not parts:
+            continue
         personalized = bool(parts and parts[0].upper() == "PERSONALIZADO")
         product_type = parts[1] if personalized and len(parts) > 1 else parts[0] if parts else "Productos"
         product_name = clean_product_name(parts[-1] if parts else "Producto")

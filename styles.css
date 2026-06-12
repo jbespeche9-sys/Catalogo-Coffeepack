@@ -301,6 +301,18 @@ select {
   padding: 14px;
 }
 
+.image-placeholder {
+  display: grid;
+  place-items: center;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 900;
+}
+
 .badge-row {
   position: absolute;
   top: 12px;

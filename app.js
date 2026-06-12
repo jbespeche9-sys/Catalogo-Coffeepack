@@ -84,10 +84,15 @@ function renderProduct(product) {
   const currentIndex = state.slideById.get(product.id) || 0;
   const imagePath = product.images[currentIndex] || product.images[0];
   const hasCarousel = product.images.length > 1;
+  const hasImage = Boolean(imagePath);
 
   card.innerHTML = `
     <div class="image-stage">
-      <img src="${imageUrl(imagePath)}" alt="${product.name}" loading="lazy" />
+      ${
+        hasImage
+          ? `<img src="${imageUrl(imagePath)}" alt="${product.name}" loading="lazy" />`
+          : `<div class="image-placeholder" role="img" aria-label="Foto pendiente">Foto pendiente</div>`
+      }
       <div class="badge-row">
         ${product.personalized ? '<span class="badge">Personalizable</span>' : ""}
         ${hasCarousel ? `<span class="photo-count">${currentIndex + 1}/${product.images.length}</span>` : ""}
