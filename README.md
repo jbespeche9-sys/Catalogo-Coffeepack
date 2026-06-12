@@ -5,13 +5,19 @@ Catalogo web interactivo para productos Coffeepack.
 ## Uso local
 
 1. Instalar Node.js.
-2. Ejecutar:
+2. Generar el catalogo estatico:
+
+```bash
+python scripts/build_catalog.py
+```
+
+3. Ejecutar:
 
 ```bash
 npm start
 ```
 
-3. Abrir `http://localhost:4173`.
+4. Abrir `http://localhost:4173`.
 
 Por defecto el servidor lee las fotos desde:
 
@@ -19,9 +25,8 @@ Por defecto el servidor lee las fotos desde:
 C:\Users\Juan Bautista\OneDrive\Escritorio\COFFEEPACK\IMAGENES COFFEPACK
 ```
 
-Tambien se puede usar otra carpeta configurando `COFFEEPACK_PHOTO_ROOT`.
+Tambien se puede usar otra carpeta configurando `COFFEEPACK_PHOTO_ROOT` antes de generar el catalogo.
 
 ```bash
 COFFEEPACK_PHOTO_ROOT="C:\ruta\a\imagenes" npm start
 ```
-

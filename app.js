@@ -25,6 +25,9 @@ function normalize(value) {
 }
 
 function imageUrl(imagePath) {
+  if (/^(https?:)?\/\//.test(imagePath) || imagePath.startsWith("assets/") || imagePath.startsWith("/assets/")) {
+    return imagePath;
+  }
   return `/photo?path=${encodeURIComponent(imagePath)}`;
 }
 
@@ -130,7 +133,10 @@ function render() {
 }
 
 async function init() {
-  const response = await fetch("/api/products");
+  let response = await fetch("assets/catalog.json");
+  if (!response.ok) {
+    response = await fetch("/api/products");
+  }
   const { products } = await response.json();
   state.products = products;
 
