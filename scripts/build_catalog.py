@@ -7,7 +7,9 @@ import shutil
 import unicodedata
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageOps
+from PIL import ImageDraw, ImageFilter
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PHOTO_ROOT = Path(
@@ -19,6 +21,7 @@ PHOTO_ROOT = Path(
 OUTPUT_ROOT = PROJECT_ROOT / "assets" / "products"
 CATALOG_PATH = PROJECT_ROOT / "assets" / "catalog.json"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif", ".bmp"}
+UNIFIED_BACKGROUND = (239, 237, 232)
 
 
 def normalize_text(value):
@@ -126,11 +129,68 @@ def merge_personalizable_products(products):
     return merged
 
 
+def normalize_simple_background(image):
+    width, height = image.size
+    preview_max = 360
+    scale = min(1, preview_max / max(width, height))
+    preview_size = (max(1, int(width * scale)), max(1, int(height * scale)))
+    preview = image.resize(preview_size, Image.Resampling.BILINEAR)
+    arr = np.asarray(preview)
+    preview_height, preview_width = arr.shape[:2]
+    edge = max(6, min(width, height) // 40)
+    edge = max(3, int(edge * scale))
+    border = np.concatenate(
+        [
+            arr[:edge, :, :].reshape(-1, 3),
+            arr[-edge:, :, :].reshape(-1, 3),
+            arr[:, :edge, :].reshape(-1, 3),
+            arr[:, -edge:, :].reshape(-1, 3),
+        ],
+        axis=0,
+    )
+    background = np.median(border, axis=0)
+    distances = np.linalg.norm(border.astype(np.int16) - background.astype(np.int16), axis=1)
+
+    # Si el borde no es bastante uniforme, suele ser una foto ambientada o con escena.
+    if np.percentile(distances, 90) > 48 or np.percentile(distances, 98) > 86:
+        return image, False
+
+    fill_color = (255, 0, 255)
+    flood = preview.copy()
+    threshold = int(max(22, min(56, np.percentile(distances, 90) + 24)))
+    seeds = [
+        (0, 0),
+        (preview_width - 1, 0),
+        (0, preview_height - 1),
+        (preview_width - 1, preview_height - 1),
+        (preview_width // 2, 0),
+        (preview_width // 2, preview_height - 1),
+        (0, preview_height // 2),
+        (preview_width - 1, preview_height // 2),
+    ]
+
+    for seed in seeds:
+        ImageDraw.floodfill(flood, seed, fill_color, thresh=threshold)
+
+    mask_arr = np.all(np.asarray(flood) == fill_color, axis=2).astype("uint8") * 255
+    coverage = mask_arr.mean() / 255
+    if coverage < 0.18 or coverage > 0.92:
+        return image, False
+
+    mask = Image.fromarray(mask_arr, mode="L")
+    mask = mask.resize(image.size, Image.Resampling.BILINEAR)
+    mask = mask.filter(ImageFilter.GaussianBlur(1.2))
+    background_layer = Image.new("RGB", image.size, UNIFIED_BACKGROUND)
+    return Image.composite(background_layer, image, mask), True
+
+
 def optimize_image(source, destination):
     with Image.open(source) as image:
         image = ImageOps.exif_transpose(image).convert("RGB")
         image.thumbnail((1100, 1100), Image.Resampling.LANCZOS)
+        image, background_changed = normalize_simple_background(image)
         image.save(destination, "WEBP", quality=78, method=6)
+        return background_changed
 
 
 def image_content_hash(source):
@@ -162,6 +222,9 @@ def main():
     products = merge_personalizable_products(walk_products(PHOTO_ROOT))
     products.sort(key=lambda product: (product["type"].lower(), product["material"].lower(), product["name"].lower()))
 
+    changed_backgrounds = 0
+    skipped_backgrounds = 0
+
     for product_index, product in enumerate(products, start=1):
         product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
         product_slug = f"{product_index:03d}-{slugify(product['name'])}"
@@ -171,7 +234,10 @@ def main():
         images = []
         for image_index, source in enumerate(product["sourceImages"], start=1):
             destination = product_dir / f"{image_index:02d}.webp"
-            optimize_image(source, destination)
+            if optimize_image(source, destination):
+                changed_backgrounds += 1
+            else:
+                skipped_backgrounds += 1
             images.append(f"assets/products/{product_slug}/{destination.name}")
 
         product["images"] = images
@@ -179,6 +245,8 @@ def main():
 
     CATALOG_PATH.write_text(json.dumps({"products": products}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Catalogo generado: {len(products)} productos")
+    print(f"Fondos unificados: {changed_backgrounds}")
+    print(f"Fondos conservados: {skipped_backgrounds}")
     print(f"Salida: {CATALOG_PATH}")
 
 
