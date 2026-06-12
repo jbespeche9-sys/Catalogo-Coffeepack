@@ -212,6 +212,20 @@ def remove_duplicate_images(sources):
     return unique_sources
 
 
+def should_preserve_context(source):
+    name = normalize_text(Path(source).name)
+    context_markers = [
+        "producto-maestro",
+        "ambient",
+        "ambiente",
+        "context",
+        "lifestyle",
+        "uso",
+        "escena",
+    ]
+    return any(marker in name for marker in context_markers)
+
+
 def main():
     if not PHOTO_ROOT.exists():
         raise FileNotFoundError(f"No existe la carpeta de fotos: {PHOTO_ROOT}")
@@ -234,7 +248,13 @@ def main():
         images = []
         for image_index, source in enumerate(product["sourceImages"], start=1):
             destination = product_dir / f"{image_index:02d}.webp"
-            if optimize_image(source, destination):
+            if should_preserve_context(source):
+                with Image.open(source) as image:
+                    image = ImageOps.exif_transpose(image).convert("RGB")
+                    image.thumbnail((1100, 1100), Image.Resampling.LANCZOS)
+                    image.save(destination, "WEBP", quality=78, method=6)
+                skipped_backgrounds += 1
+            elif optimize_image(source, destination):
                 changed_backgrounds += 1
             else:
                 skipped_backgrounds += 1
