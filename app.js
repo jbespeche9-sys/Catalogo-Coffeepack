@@ -109,15 +109,28 @@ function renderProduct(product) {
   `;
 
   card.querySelectorAll("[data-dir]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
       const direction = Number(button.dataset.dir);
-      const next = (currentIndex + direction + product.images.length) % product.images.length;
+      const activeIndex = state.slideById.get(product.id) || 0;
+      const next = (activeIndex + direction + product.images.length) % product.images.length;
       state.slideById.set(product.id, next);
-      renderProducts();
+      updateProductSlide(card, product, next);
     });
   });
 
   return card;
+}
+
+function updateProductSlide(card, product, index) {
+  const image = card.querySelector(".image-stage img");
+  const counter = card.querySelector(".photo-count");
+  if (image) {
+    image.src = imageUrl(product.images[index]);
+  }
+  if (counter) {
+    counter.textContent = `${index + 1}/${product.images.length}`;
+  }
 }
 
 function renderProducts() {
