@@ -85,7 +85,7 @@ def walk_products(root):
                 "name": product_name,
                 "type": product_type,
                 "material": material,
-                "personalized": personalized,
+                "personalized": personalized or product_type == "Portavasos",
                 "path": " / ".join(parts),
                 "sourceImages": [str(Path(dirpath) / file_name) for file_name in image_files],
             }

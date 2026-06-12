@@ -730,11 +730,11 @@
       "name": "Portavasos de cartulina para dos vasos",
       "type": "Portavasos",
       "material": "Sin material",
-      "personalized": false,
+      "personalized": true,
       "path": "Portavasos / Portavasos de cartulina para dos vasos",
-      "personalizable": false,
+      "personalizable": true,
       "sources": [
-        "linea"
+        "personalizado"
       ],
       "images": [
         "assets/products/046-portavasos-de-cartulina-para-dos-vasos/01.webp",
@@ -747,11 +747,11 @@
       "name": "Portavasos estilo matero",
       "type": "Portavasos",
       "material": "Sin material",
-      "personalized": false,
+      "personalized": true,
       "path": "Portavasos / Portavasos estilo matero",
-      "personalizable": false,
+      "personalizable": true,
       "sources": [
-        "linea"
+        "personalizado"
       ],
       "images": [
         "assets/products/047-portavasos-estilo-matero/01.webp"
@@ -762,11 +762,11 @@
       "name": "Portavasos estilo matero 2",
       "type": "Portavasos",
       "material": "Sin material",
-      "personalized": false,
+      "personalized": true,
       "path": "Portavasos / Portavasos estilo matero 2",
-      "personalizable": false,
+      "personalizable": true,
       "sources": [
-        "linea"
+        "personalizado"
       ],
       "images": [
         "assets/products/048-portavasos-estilo-matero-2/01.webp"
@@ -777,11 +777,11 @@
       "name": "Portavasos Valija para dos vasos",
       "type": "Portavasos",
       "material": "Sin material",
-      "personalized": false,
+      "personalized": true,
       "path": "Portavasos / Portavasos Valija para dos vasos",
-      "personalizable": false,
+      "personalizable": true,
       "sources": [
-        "linea"
+        "personalizado"
       ],
       "images": [
         "assets/products/049-portavasos-valija-para-dos-vasos/01.webp"
