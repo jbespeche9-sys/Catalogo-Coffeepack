@@ -88,7 +88,7 @@ def walk_products(root):
                 "name": product_name,
                 "type": product_type,
                 "material": material,
-                "personalized": personalized or product_type == "Portavasos",
+                "personalized": is_personalizable_product(product_type, product_name, personalized),
                 "path": " / ".join(parts),
                 "sourceImages": [str(Path(dirpath) / file_name) for file_name in image_files],
             }
@@ -224,6 +224,13 @@ def should_preserve_context(source):
         "escena",
     ]
     return any(marker in name for marker in context_markers)
+
+
+def is_personalizable_product(product_type, product_name, personalized):
+    normalized_name = normalize_text(product_name)
+    if "tapa vasos polipapel" in normalized_name or "tapas vasos polipapel" in normalized_name:
+        return False
+    return personalized or product_type == "Portavasos"
 
 
 def main():

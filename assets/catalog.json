@@ -1257,11 +1257,10 @@
       "name": "Tapa Vasos Polipapel 12Oz Blanca Doble-Simple Pared",
       "type": "Vasos",
       "material": "Polipapel",
-      "personalized": true,
+      "personalized": false,
       "path": "Vasos / Polipapel / Tapas Vasos Polipapel / Tapa Vasos Polipapel 12Oz Blanca Doble-Simple Pared",
-      "personalizable": true,
+      "personalizable": false,
       "sources": [
-        "personalizado",
         "linea"
       ],
       "images": [
@@ -1274,11 +1273,10 @@
       "name": "Tapa Vasos Polipapel 12Oz Negra Doble-Simple Pared",
       "type": "Vasos",
       "material": "Polipapel",
-      "personalized": true,
+      "personalized": false,
       "path": "Vasos / Polipapel / Tapas Vasos Polipapel / Tapa Vasos Polipapel 12Oz Negra Doble-Simple Pared",
-      "personalizable": true,
+      "personalizable": false,
       "sources": [
-        "personalizado",
         "linea"
       ],
       "images": [
@@ -1291,11 +1289,10 @@
       "name": "Tapa Vasos Polipapel 6-8Oz Blanca Doble-Simple Pared",
       "type": "Vasos",
       "material": "Polipapel",
-      "personalized": true,
+      "personalized": false,
       "path": "Vasos / Polipapel / Tapas Vasos Polipapel / Tapa Vasos Polipapel 6-8Oz Blanca Doble-Simple Pared",
-      "personalizable": true,
+      "personalizable": false,
       "sources": [
-        "personalizado",
         "linea"
       ],
       "images": [
@@ -1308,11 +1305,10 @@
       "name": "Tapa Vasos Polipapel 6-8Oz Negra Doble-Simple Pared",
       "type": "Vasos",
       "material": "Polipapel",
-      "personalized": true,
+      "personalized": false,
       "path": "Vasos / Polipapel / Tapas Vasos Polipapel / Tapa Vasos Polipapel 6-8Oz Negra Doble-Simple Pared",
-      "personalizable": true,
+      "personalizable": false,
       "sources": [
-        "personalizado",
         "linea"
       ],
       "images": [
