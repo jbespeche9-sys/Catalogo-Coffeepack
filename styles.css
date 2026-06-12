@@ -4,6 +4,7 @@
   --line: #dedbd4;
   --paper: #fbfaf7;
   --panel: #f0eee8;
+  --photo-bg: #efede8;
   --soft: #e7e2d8;
   --accent: #587366;
   --accent-strong: #3a2418;
@@ -286,7 +287,7 @@ select {
   aspect-ratio: 1 / 1.08;
   overflow: hidden;
   border-radius: 8px;
-  background: linear-gradient(180deg, #f1efea 0%, #e8e4dc 100%);
+  background: var(--photo-bg);
 }
 
 .image-stage img {
@@ -294,7 +295,6 @@ select {
   height: 100%;
   object-fit: contain;
   padding: 14px;
-  mix-blend-mode: multiply;
 }
 
 .badge-row {
