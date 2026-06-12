@@ -77,12 +77,16 @@ select {
 }
 
 .quote-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 104px;
   min-height: 36px;
   border-radius: 999px;
   color: var(--white);
   background: var(--ink);
   font-weight: 800;
+  text-decoration: none;
 }
 
 .hero {
