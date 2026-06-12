@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import json
 import os
 import re
@@ -132,6 +133,25 @@ def optimize_image(source, destination):
         image.save(destination, "WEBP", quality=78, method=6)
 
 
+def image_content_hash(source):
+    with Image.open(source) as image:
+        image = ImageOps.exif_transpose(image).convert("RGB")
+        image.thumbnail((700, 700), Image.Resampling.LANCZOS)
+        return hashlib.sha256(image.tobytes()).hexdigest()
+
+
+def remove_duplicate_images(sources):
+    seen = set()
+    unique_sources = []
+    for source in sources:
+        digest = image_content_hash(source)
+        if digest in seen:
+            continue
+        seen.add(digest)
+        unique_sources.append(source)
+    return unique_sources
+
+
 def main():
     if not PHOTO_ROOT.exists():
         raise FileNotFoundError(f"No existe la carpeta de fotos: {PHOTO_ROOT}")
@@ -143,6 +163,7 @@ def main():
     products.sort(key=lambda product: (product["type"].lower(), product["material"].lower(), product["name"].lower()))
 
     for product_index, product in enumerate(products, start=1):
+        product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
         product_slug = f"{product_index:03d}-{slugify(product['name'])}"
         product_dir = OUTPUT_ROOT / product_slug
         product_dir.mkdir(parents=True, exist_ok=True)
