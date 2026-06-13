@@ -132,7 +132,7 @@ def merge_personalizable_products(products):
     return merged
 
 
-def normalize_simple_background(image):
+def normalize_simple_background(image, force=False):
     width, height = image.size
     preview_max = 360
     scale = min(1, preview_max / max(width, height))
@@ -155,12 +155,13 @@ def normalize_simple_background(image):
     distances = np.linalg.norm(border.astype(np.int16) - background.astype(np.int16), axis=1)
 
     # Si el borde no es bastante uniforme, suele ser una foto ambientada o con escena.
-    if np.percentile(distances, 90) > 48 or np.percentile(distances, 98) > 86:
+    if not force and (np.percentile(distances, 90) > 48 or np.percentile(distances, 98) > 86):
         return image, False
 
     fill_color = (255, 0, 255)
     flood = preview.copy()
-    threshold = int(max(22, min(56, np.percentile(distances, 90) + 24)))
+    threshold_limit = 82 if force else 56
+    threshold = int(max(22, min(threshold_limit, np.percentile(distances, 90) + 24)))
     seeds = [
         (0, 0),
         (preview_width - 1, 0),
@@ -177,7 +178,9 @@ def normalize_simple_background(image):
 
     mask_arr = np.all(np.asarray(flood) == fill_color, axis=2).astype("uint8") * 255
     coverage = mask_arr.mean() / 255
-    if coverage < 0.18 or coverage > 0.92:
+    if not force and (coverage < 0.18 or coverage > 0.92):
+        return image, False
+    if force and (coverage < 0.08 or coverage > 0.995):
         return image, False
 
     mask = Image.fromarray(mask_arr, mode="L")
@@ -187,11 +190,11 @@ def normalize_simple_background(image):
     return Image.composite(background_layer, image, mask), True
 
 
-def optimize_image(source, destination):
+def optimize_image(source, destination, force_background=False):
     with Image.open(source) as image:
         image = ImageOps.exif_transpose(image).convert("RGB")
         image.thumbnail((1100, 1100), Image.Resampling.LANCZOS)
-        image, background_changed = normalize_simple_background(image)
+        image, background_changed = normalize_simple_background(image, force=force_background)
         image.save(destination, "WEBP", quality=78, method=6)
         return background_changed
 
@@ -229,6 +232,17 @@ def should_preserve_context(source):
     return any(marker in name for marker in context_markers)
 
 
+def should_force_background(source):
+    normalized_source = normalize_text(str(source))
+    name = normalize_text(Path(source).name)
+    return "potes para salsas" in normalized_source and "bamboo" in normalized_source and "producto-maestro" not in name
+
+
+def prioritize_product_images(product):
+    if product["type"] == "Potes para salsas" and product["material"] == "Bamboo":
+        product["sourceImages"].sort(key=lambda source: 1 if should_preserve_context(source) else 0)
+
+
 def is_personalizable_product(product_type, product_name, personalized):
     normalized_name = normalize_text(product_name)
     if "tapa vasos polipapel" in normalized_name or "tapas vasos polipapel" in normalized_name:
@@ -251,6 +265,7 @@ def main():
 
     for product_index, product in enumerate(products, start=1):
         product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
+        prioritize_product_images(product)
         product_slug = f"{product_index:03d}-{slugify(product['name'])}"
         product_dir = OUTPUT_ROOT / product_slug
         product_dir.mkdir(parents=True, exist_ok=True)
@@ -264,7 +279,7 @@ def main():
                     image.thumbnail((1100, 1100), Image.Resampling.LANCZOS)
                     image.save(destination, "WEBP", quality=78, method=6)
                 skipped_backgrounds += 1
-            elif optimize_image(source, destination):
+            elif optimize_image(source, destination, force_background=should_force_background(source)):
                 changed_backgrounds += 1
             else:
                 skipped_backgrounds += 1
