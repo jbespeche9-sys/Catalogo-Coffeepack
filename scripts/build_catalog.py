@@ -250,6 +250,17 @@ def prioritize_product_images(product):
     if product["type"] == "Potes para salsas" and product["material"] == "Bamboo":
         product["sourceImages"].sort(key=lambda source: 1 if should_preserve_context(source) else 0)
 
+    normalized_name = normalize_text(product["name"])
+    cover_by_product = {
+        "vaso polipapel kraft 12oz. doble pared (355cc)": 1,
+        "vaso polipapel kraft 8 oz doble pared (237cc)": 2,
+        "vaso polipapel blanco 8 oz doble pared (237cc)": 1,
+    }
+    cover_index = cover_by_product.get(normalized_name)
+    if cover_index is not None and cover_index < len(product["sourceImages"]):
+        cover_image = product["sourceImages"].pop(cover_index)
+        product["sourceImages"].insert(0, cover_image)
+
 
 def is_personalizable_product(product_type, product_name, personalized):
     normalized_name = normalize_text(product_name)
