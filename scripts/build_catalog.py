@@ -238,6 +238,14 @@ def should_force_background(source):
     return "potes para salsas" in normalized_source and "bamboo" in normalized_source and "producto-maestro" not in name
 
 
+def should_skip_source_image(source, product_name):
+    normalized_product = normalize_text(product_name)
+    file_name = normalize_text(Path(source).name)
+    if "vaso polipapel kraft 8 oz doble pared" in normalized_product and file_name.startswith("520533_"):
+        return True
+    return False
+
+
 def prioritize_product_images(product):
     if product["type"] == "Potes para salsas" and product["material"] == "Bamboo":
         product["sourceImages"].sort(key=lambda source: 1 if should_preserve_context(source) else 0)
@@ -265,6 +273,9 @@ def main():
 
     for product_index, product in enumerate(products, start=1):
         product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
+        product["sourceImages"] = [
+            source for source in product["sourceImages"] if not should_skip_source_image(source, product["name"])
+        ]
         prioritize_product_images(product)
         product_slug = f"{product_index:03d}-{slugify(product['name'])}"
         product_dir = OUTPUT_ROOT / product_slug

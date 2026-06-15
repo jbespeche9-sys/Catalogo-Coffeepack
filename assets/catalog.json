@@ -1575,7 +1575,11 @@
         "personalizado",
         "linea"
       ],
-      "images": []
+      "images": [
+        "assets/products/098-vaso-polipapel-blanco-8-oz-doble-pared-237cc/01.webp",
+        "assets/products/098-vaso-polipapel-blanco-8-oz-doble-pared-237cc/02.webp",
+        "assets/products/098-vaso-polipapel-blanco-8-oz-doble-pared-237cc/03.webp"
+      ]
     },
     {
       "id": "VmFzb3NcUG9saXBhcGVsXFZhc29zIFBvbGlwYXBlbCBTaW1wbGUgUGFyZWRcVmFzbyBQb2xpcGFwZWwgS3JhZnQgMTJvei4gKDM1NWNjKQ",
@@ -1646,10 +1650,7 @@
         "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/01.webp",
         "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/02.webp",
         "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/03.webp",
-        "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/04.webp",
-        "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/05.webp",
-        "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/06.webp",
-        "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/07.webp"
+        "assets/products/102-vaso-polipapel-kraft-8-oz-doble-pared-237cc/04.webp"
       ]
     },
     {
