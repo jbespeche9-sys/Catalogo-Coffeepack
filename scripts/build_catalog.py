@@ -255,6 +255,7 @@ def prioritize_product_images(product):
         "vaso polipapel kraft 12oz. doble pared (355cc)": 1,
         "vaso polipapel kraft 8 oz doble pared (237cc)": 2,
         "vaso polipapel blanco 8 oz doble pared (237cc)": 1,
+        "tapa domo cristal sin perf o con perf para vaso 10-12-16-20oz": 2,
     }
     cover_index = cover_by_product.get(normalized_name)
     if cover_index is not None and cover_index < len(product["sourceImages"]):
