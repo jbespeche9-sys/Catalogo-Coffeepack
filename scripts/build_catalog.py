@@ -274,6 +274,8 @@ def prioritize_product_images(product):
         "vaso polipapel kraft 8 oz doble pared (237cc)": 2,
         "vaso polipapel blanco 8 oz doble pared (237cc)": 1,
         "tapa domo cristal sin perf o con perf para vaso 10-12-16-20oz": 2,
+        "tapa plana cristal sin perf o con perf para vaso 10-12-16-20oz": 2,
+        "ensaladera polipapel chica 25oz blanca": 2,
         "servilleta gastronomica blanca (18x18cm) eco (tissue) caja x0.7kg": 1,
         "vaso pet cristal 12 oz (360cc) sin tapa": 1,
         "vaso pet cristal 16 oz (473cc) sin tapa": 1,
