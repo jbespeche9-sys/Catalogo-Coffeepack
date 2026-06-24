@@ -277,6 +277,8 @@ def prioritize_product_images(product):
         "tapa plana cristal sin perf o con perf para vaso 10-12-16-20oz": 2,
         "ensaladera polipapel chica 25oz blanca": 2,
         "servilleta gastronomica blanca (18x18cm) eco (tissue) caja x0.7kg": 1,
+        "servilleta gastronomica beige (16x17cm) multi servi (tissue) caja x2000unid": 1,
+        "servilleta gastronomica beige (33x33cm) eco (tissue) caja x1.10kg": 1,
         "vaso pet cristal 12 oz (360cc) sin tapa": 1,
         "vaso pet cristal 16 oz (473cc) sin tapa": 1,
     }
