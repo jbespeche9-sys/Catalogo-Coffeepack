@@ -246,6 +246,24 @@ def should_skip_source_image(source, product_name):
     return False
 
 
+def prepare_source_images(products):
+    for product in products:
+        product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
+        product["sourceImages"] = [
+            source for source in product["sourceImages"] if not should_skip_source_image(source, product["name"])
+        ]
+
+    products_by_name = {normalize_text(product["name"]): product for product in products}
+    image_replacements = {
+        "bolsa numero 2l sulfito x100 -": "bolsa numero 2 sulfito x100",
+    }
+    for target_name, source_name in image_replacements.items():
+        target = products_by_name.get(target_name)
+        source = products_by_name.get(source_name)
+        if target and source:
+            target["sourceImages"] = list(source["sourceImages"])
+
+
 def prioritize_product_images(product):
     if product["type"] == "Potes para salsas" and product["material"] == "Bamboo":
         product["sourceImages"].sort(key=lambda source: 1 if should_preserve_context(source) else 0)
@@ -279,15 +297,12 @@ def main():
 
     products = merge_personalizable_products(walk_products(PHOTO_ROOT))
     products.sort(key=lambda product: (product["type"].lower(), product["material"].lower(), product["name"].lower()))
+    prepare_source_images(products)
 
     changed_backgrounds = 0
     skipped_backgrounds = 0
 
     for product_index, product in enumerate(products, start=1):
-        product["sourceImages"] = remove_duplicate_images(product["sourceImages"])
-        product["sourceImages"] = [
-            source for source in product["sourceImages"] if not should_skip_source_image(source, product["name"])
-        ]
         prioritize_product_images(product)
         product_slug = f"{product_index:03d}-{slugify(product['name'])}"
         product_dir = OUTPUT_ROOT / product_slug
