@@ -253,6 +253,14 @@ def prepare_source_images(products):
             source for source in product["sourceImages"] if not should_skip_source_image(source, product["name"])
         ]
 
+    max_images_by_product = {
+        "collarines universales para vasos de polipapel": 2,
+    }
+    for product in products:
+        max_images = max_images_by_product.get(normalize_text(product["name"]))
+        if max_images is not None:
+            product["sourceImages"] = product["sourceImages"][:max_images]
+
     products_by_name = {normalize_text(product["name"]): product for product in products}
     image_replacements = {
         "bolsa numero 2l sulfito x100 -": "bolsa numero 2 sulfito x100",
